@@ -15,10 +15,10 @@ class CouchDB:
     def saveTweet(self, tweet):
         url =  self.server + "/" + self.db + "/"
         tweetJson = json.loads(tweet)
-        res = requests.put(url + tweetJson["id"], data=json.dumps(tweetJson))
+        res = requests.put(url + tweetJson["id_str"], data=json.dumps(tweetJson))
         return res.text
 
 if __name__ == '__main__':
     couchdb = CouchDB("45.113.233.19", "8081", "tweets")
     print(couchdb.getDBs())
-    print(couchdb.saveTweet('{"id":"1", "Name":"Raju", "age":23, "Designation":"Designer"}'))
+    print(couchdb.saveTweet('{"id_str":"1", "Name":"Raju", "age":23, "Designation":"Designer"}'))
