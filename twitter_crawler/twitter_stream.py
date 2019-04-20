@@ -7,6 +7,7 @@ from tweepy import Stream  #streaming API of twittter
 
 import re
 import twitter_credentials #file containing Consumer and API keys
+from couchdb import CouchDB
 
 # TWITTER CLIENT
 
@@ -83,11 +84,8 @@ class TwitterListener(StreamListener):
 
     def on_data(self, data):
         try:
-            #print(data)
-            with open(self.fetched_tweets_filename, 'a') as tf:
-                tf.write(data.rstrip('\n'))
-                #tf.write(data.rstrip('\n')) #for windwows??
-            return True
+            couchdb = CouchDB("45.113.233.19", "8081", "tweets")
+            couchdb.saveTweet(data)
         except BaseException as e:
             print("Error on_data %s" % str(e))
         return True
