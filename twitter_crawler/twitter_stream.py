@@ -5,12 +5,7 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream  #streaming API of twittter
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
 import re
- 
 import twitter_credentials #file containing Consumer and API keys
 
 # TWITTER CLIENT
