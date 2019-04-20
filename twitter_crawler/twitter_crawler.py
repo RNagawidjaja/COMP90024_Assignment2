@@ -45,12 +45,12 @@ class TwitterClient():
         return home_timeline
         
         
-    def search_tweet(self, params):
+    def search_tweet(self, q_search, loc_search):
         tweets = []
-        
-        for tweet in Cursor(self.twitter_client.search, q=params).items(5):
-            tweets.append(tweet)
-        return tweet
+        with open('tweets_search.json', 'a', encoding='UTF-8') as tf:
+            for tweet in Cursor(self.twitter_client.search, q=q_search, geocode=loc_search).items():
+                tf.write(str(tweet) + '\n')
+        return True
         
 # # # # TWITTER AUTHENTICATOR # # #
 
@@ -68,14 +68,14 @@ class TwitterStreamer():
     def __init__(self):
         self.twitter_authenticator = TwitterAuthenticator()
 
-    def stream_tweets(self, fetched_tweets_filename, hash_tag_list):
+    def stream_tweets(self, fetched_tweets_filename, hash_tag_list, locations):
         # This handles Twitter authetification and the connection to Twitter Streaming API
         auth = self.twitter_authenticator.authenticate_twitter_app()
         listener = TwitterListener(fetched_tweets_filename)
         stream = Stream(auth, listener)
 
         # This line filter Twitter Streams to capture data by the keywords: 
-        stream.filter(track=hash_tag_list)
+        stream.filter(track=hash_tag_list, locations=locations)
 
 
 # # # # TWITTER STREAM LISTENER # # # #
@@ -88,7 +88,7 @@ class TwitterListener(StreamListener):
 
     def on_data(self, data):
         try:
-            print(data)
+            #print(data)
             with open(self.fetched_tweets_filename, 'a') as tf:
                 tf.write(data.rstrip('\n'))
                 #tf.write(data.rstrip('\n')) #for windwows??
@@ -107,9 +107,15 @@ class TwitterListener(StreamListener):
 
  
 if __name__ == '__main__':
-    hash_tag_list = ['nba']
-    fetched_tweets_filename = 'tweets.json'
+    hash_tag_list = []
+    q_search = "*"
+    loc_stream = [144.5532, -38.2250, 145.5498, -37.5401, 150.6396, -34.1399, 151.3439, -33.5780] #Melbourne, Sydney
+    loc_melb = "-37.8658,145.1028,30km"
+    loc_syd = "-33.8563,151.0210,30km"
+    fetched_tweets_filename = 'tweets_stream.json'
+    twitter_client = TwitterClient()
+    twitter_client.search_tweet(q_search, loc_melb)
+    twitter_client.search_tweet(q_search, loc_syd)
+        
     twitter_streamer = TwitterStreamer()
-    twitter_streamer.stream_tweets(fetched_tweets_filename, hash_tag_list)
-    #twitter_client = TwitterClient()
-    #print(twitter_client.search_tweet('Sixers'))
+    twitter_streamer.stream_tweets(fetched_tweets_filename, hash_tag_list, loc_stream)
