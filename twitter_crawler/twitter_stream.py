@@ -114,8 +114,8 @@ if __name__ == '__main__':
     loc_syd = "-33.8563,151.0210,30km"
     fetched_tweets_filename = 'tweets_stream.json'
     twitter_client = TwitterClient()
-    twitter_client.search_tweet(q_search, loc_melb)
-    twitter_client.search_tweet(q_search, loc_syd)
+    #twitter_client.search_tweet(q_search, loc_melb)
+    #twitter_client.search_tweet(q_search, loc_syd)
         
     twitter_streamer = TwitterStreamer()
     twitter_streamer.stream_tweets(fetched_tweets_filename, hash_tag_list, loc_stream)
