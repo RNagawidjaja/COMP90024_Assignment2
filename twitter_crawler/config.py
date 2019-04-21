@@ -1,5 +1,13 @@
-#variables that contain the user credentials to access Twitter API
+# variables that contain the user credentials to access Twitter API
 CONSUMER_KEY = "YkfyoJoVkb5b7LTonsVeeEcBH"
 CONSUMER_SECRET = "PuHHnYAclBnw8NPj41sZaK7P5Tkr9AIU7ir7BLhyCGsGj07Tlk"
 ACCESS_TOKEN =  "1104339045520334849-NT3AVwl1YO52DN3yEuqHTyPXw7mhL0"
 ACCESS_TOKEN_SECRET = "YoDLdMtuB8kN4PGCtbgzpWaxnYRDZsEgRxEySSm3WKUKH"
+
+# database
+DATABASE_IP = "45.113.233.19"
+DATABASE_PORT = "8081"
+DATABASE_NAME = "test"
+
+# stream location
+LOCATION = [144.5532, -38.2250, 145.5498, -37.5401]
