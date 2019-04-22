@@ -40,7 +40,9 @@ class TwitterListener(StreamListener):
         try:
             tweet = json.loads(data)
             id = tweet["id_str"]
-            self.db.saveJson(id, tweet)
+            res = self.db.saveJson(id, tweet)
+            if "error" in res and res["error"] == "conflict":
+                print("Document id " + id + " already in database")
         except BaseException as e:
             print("Error on_data %s" % str(e))
         return True
