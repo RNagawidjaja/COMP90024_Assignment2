@@ -15,7 +15,7 @@ class CouchDB:
         return res.json()
 
     def saveJson(self, id, data):
-        url =  self.serverURL + "/" + self.db + "/" + id
+        url =  self.serverURL + "/" + self.db + "/" + str(id)
         res = requests.put(url, data=json.dumps(data))
         return res.json()
 

@@ -21,8 +21,10 @@ class TwitterClient():
         self.twitter_client = API(self.auth)
         self.twitter_user = twitter_user
         
-    def search_tweet(self, db, q_search, loc_search, max_id):
-        for tweet in Cursor(self.twitter_client.search, q=q_search, geocode=loc_search, max_id = max_id, wait_on_rate_limit=True, wait_on_rate_limit_notify=True).items(30):
+    def search_tweet(self, db, q_search, loc_search):
+        for tweet in Cursor(self.twitter_client.search,
+                            q=q_search, geocode=loc_search,
+                            wait_on_rate_limit=True, wait_on_rate_limit_notify=True).items():
             id = tweet.id
             db.saveJson(id, tweet._json)
         return id
@@ -31,8 +33,8 @@ class TwitterClient():
 if __name__ == '__main__':
     hash_tag_list = []
     q_search = "*"
-    loc_melb = "-37.8658,145.1028,30km"
-    loc_syd = "-33.8563,151.0210,30km"
+    loc_melb = "-37.8658,145.1028,50km"
+    loc_syd = "-33.8563,151.0210,50km"
     twitter_client = TwitterClient()
     count = 0
     max_id_melb = 9999999999999999999
@@ -42,19 +44,9 @@ if __name__ == '__main__':
     db = CouchDB(config.DATABASE_IP, config.DATABASE_PORT, config.DATABASE_NAME)
 
     while True:
-        if min_id_melb >= max_id_melb or min_id_syd >= max_id_syd:
-            time.sleep(6*60*60)
-            #print('min id reached')
-            max_id_melb = 9999999999999999999
-            max_id_syd = 9999999999999999999
-            min_id_melb = twitter_client.search_tweet(q_search, db, loc_melb, max_id_melb)
-            min_id_melb = twitter_client.search_tweet(q_search, db, loc_syd, max_id_syd)
-        max_id_melb = twitter_client.search_tweet(q_search, db, loc_melb, max_id_melb)
-        max_id_syd = twitter_client.search_tweet(q_search, db, loc_syd, max_id_syd)
-        if count >= 28:
-            #print('sleep time')
-            time.sleep(15*60)
-
-            count = 0
-        else:
-            count = count + 1
+        try:
+            max_id_melb = twitter_client.search_tweet(db, q_search, loc_melb)
+            max_id_syd = twitter_client.search_tweet(db, q_search, loc_syd)
+        except KeyboardInterrupt:
+            print("\nQuiting")
+            exit()
