@@ -11,8 +11,6 @@ import config #file containing Consumer and API keys
 import time
 import json
 
-# TWITTER CLIENT
-
 class TwitterClient():
     def __init__(self, twitter_user=None):
         self.auth = OAuthHandler(config.CONSUMER_KEY, config.CONSUMER_SECRET)
@@ -26,27 +24,19 @@ class TwitterClient():
                             q=q_search, geocode=loc_search,
                             wait_on_rate_limit=True, wait_on_rate_limit_notify=True).items():
             id = tweet.id
-            db.saveJson(id, tweet._json)
-        return id
-
+            print(db.saveJson(id, tweet._json))
 
 if __name__ == '__main__':
-    hash_tag_list = []
     q_search = "*"
     loc_melb = "-37.8658,145.1028,50km"
     loc_syd = "-33.8563,151.0210,50km"
     twitter_client = TwitterClient()
-    count = 0
-    max_id_melb = 9999999999999999999
-    max_id_syd = 9999999999999999999
-    min_id_melb = 1118302967764013059 #min id on 17/4/2019
-    min_id_syd = 1118302964962209792 #min id on 17/4/2019
     db = CouchDB(config.DATABASE_IP, config.DATABASE_PORT, config.DATABASE_NAME)
 
     while True:
         try:
-            max_id_melb = twitter_client.search_tweet(db, q_search, loc_melb)
-            max_id_syd = twitter_client.search_tweet(db, q_search, loc_syd)
+            twitter_client.search_tweet(db, q_search, loc_melb)
+            #twitter_client.search_tweet(db, q_search, loc_syd)
         except KeyboardInterrupt:
             print("\nQuiting")
             exit()
