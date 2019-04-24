@@ -24,7 +24,7 @@ class TwitterClient():
                             q=q_search, geocode=loc_search,
                             wait_on_rate_limit=True, wait_on_rate_limit_notify=True).items():
             id = tweet.id
-            print(db.saveJson(id, tweet._json))
+            db.saveJson(id, tweet._json)
 
 if __name__ == '__main__':
     q_search = "*"
