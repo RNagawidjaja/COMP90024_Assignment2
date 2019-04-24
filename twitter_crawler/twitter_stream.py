@@ -55,7 +55,11 @@ class TwitterListener(StreamListener):
             return False
  
 if __name__ == '__main__':
-    loc = config.LOCATION
-    db = CouchDB(config.DATABASE_IP, config.DATABASE_PORT, config.DATABASE_NAME)
-    twitter_streamer = TwitterStreamer(db, loc)
-    twitter_streamer.stream_tweets()
+    try:
+        loc = config.LOCATION
+        db = CouchDB(config.DATABASE_IP, config.DATABASE_PORT, config.DATABASE_NAME)
+        twitter_streamer = TwitterStreamer(db, loc)
+        twitter_streamer.stream_tweets()
+    except KeyboardInterrupt:
+        print("\nQuiting")
+        exit()
