@@ -5,8 +5,7 @@ After=multi-user.target
 [Service]
 Type=idle
 User=ubuntu
-ExecStart=/usr/bin/python3 /home/ubuntu/COMP90024_Assignment2/twitter_crawler/twitter_stream.py
-Restart=always
+ExecStart=/usr/bin/python3 {{ install_location }}/twitter_crawler/twitter_stream.py
 
 [Install]
 WantedBy=multi-user.target
