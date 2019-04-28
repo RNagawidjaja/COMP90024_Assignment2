@@ -1,0 +1,89 @@
+# - name: Remove exsiting couchdb
+#   apt:
+#     name: couchdb
+#     state: absent
+#     purge: yes
+#     force_apt_get: yes
+
+# - name: Delete data
+#   file:
+#     state: absent
+#     path: /mnt/data/
+
+- name: Update repositories cache and install couchdb
+  apt:
+    name: couchdb
+    update_cache: yes
+
+- name: Edit vm.args
+  template:
+    src: vm_args.j2
+    dest: /opt/couchdb/etc/vm.args
+    owner: couchdb
+    group: couchdb
+    mode: 0640
+
+- name: Edit local.ini
+  template:
+    src: local.j2
+    dest: /opt/couchdb/etc/local.ini
+    owner: couchdb
+    group: couchdb
+    mode: 0640
+
+- name: Restart couchdb
+  systemd:
+    name: couchdb
+    state: restarted
+
+- name: Enable cluster
+  uri:
+    method: POST
+    url: http://{{ inventory_hostname }}:5984/_cluster_setup
+    user: admin
+    password: admin
+    force_basic_auth: yes
+    status_code: 201
+    body_format: json
+    body: 
+      action: "enable_cluster"
+      bind_address: "0.0.0.0"
+      username: "admin"
+      password: "admin"
+      port: "5984"
+      remote_node: "{{ item }}"
+      remote_current_user: "admin"
+      remote_current_password: "admin"
+  loop: "{{ groups['dbservers'] }}"
+  when: inventory_hostname == groups['dbservers'][0] and inventory_hostname != item
+
+- name: Add nodes
+  uri:
+    method: POST
+    url: http://{{ inventory_hostname }}:5984/_cluster_setup
+    user: admin
+    password: admin
+    force_basic_auth: yes
+    status_code: 201
+    body_format: json
+    body:
+      action: "add_node"
+      host: "{{ item }}"
+      port: "5984"
+      username: "admin"
+      password: "admin"
+  loop: "{{ groups['dbservers'] }}"
+  when: inventory_hostname == groups['dbservers'][0] and inventory_hostname != item
+
+- name: Finish cluster setup
+  uri:
+    method: POST
+    url: http://{{ inventory_hostname }}:5984/_cluster_setup
+    user: admin
+    password: admin
+    force_basic_auth: yes
+    status_code: 201
+    body_format: json
+    body:
+      action: "finish_cluster"
+  when: inventory_hostname == groups['dbservers'][0]
