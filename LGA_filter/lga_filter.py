@@ -4,6 +4,7 @@ from shapely.geometry.polygon import Polygon
 import json
 from numpy import array
 import couchdb
+import sys
 
 class LGA_filter:
     def __init__(self, lga_file):
@@ -52,9 +53,17 @@ if __name__ == '__main__':
     #y = tweets['rows'][0]['value']['coordinates']
     
     couchserver = couchdb.Server('http://45.113.233.19:8081')
-    db = couchserver['tweets']
+    db_tweets = couchserver['tweets']
+    db_tweets_geo = couchserver['tweets_geo']
     lga_f = LGA_filter(LGA_file)
-    for item in db.view('_design/geo/_view/geo'):
-        print(lga_f.filter(item.value['coordinates']))
+    for item in db_tweets.view('_design/geo/_view/geo', descending = True):
+        lga_name = lga_f.filter(item.value['coordinates'])
+        doc = {'_id': item.id, 'coordinates': item.value['coordinates'], 'lga_name' : lga_name}
+        try:
+            db_tweets_geo.save(doc)
+        except couchdb.http.ResourceConflict:
+            print(item.id)
+            print('ID has already existed')
+            sys.exit()
     
     #print(list(map(lga_f.filter, tweets['rows'])))
