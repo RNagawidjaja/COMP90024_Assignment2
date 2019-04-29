@@ -9,7 +9,8 @@ class LGA_filter:
         with open(LGA_file, encoding='UTF-8') as lf:
             self.lga = json.load(lf)
             
-    def filter(self, point):
+    def filter(self, tweet):
+        point = tweet['value']['coordinates']
         point = [point[1], point[0]]
         point = Point(tuple(point))
         lga_name = None
@@ -50,6 +51,4 @@ if __name__ == '__main__':
     #y = tweets['rows'][0]['value']['coordinates']
     
     lga_f = LGA_filter(LGA_file)
-    for tweet in tweets['rows']:
-        
-        print(lga_f.filter(tweet['value']['coordinates']))
+    print(list(map(lga_f.filter, tweets['rows'])))
