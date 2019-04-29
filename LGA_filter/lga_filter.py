@@ -3,14 +3,15 @@ from shapely.geometry.multipolygon import MultiPolygon
 from shapely.geometry.polygon import Polygon
 import json
 from numpy import array
+import couchdb
 
 class LGA_filter:
     def __init__(self, lga_file):
         with open(LGA_file, encoding='UTF-8') as lf:
             self.lga = json.load(lf)
             
-    def filter(self, tweet):
-        point = tweet['value']['coordinates']
+    def filter(self, point):
+        #point = tweet['value']['coordinates']
         point = [point[1], point[0]]
         point = Point(tuple(point))
         lga_name = None
@@ -50,5 +51,10 @@ if __name__ == '__main__':
         tweets = json.load(tf)
     #y = tweets['rows'][0]['value']['coordinates']
     
+    couchserver = couchdb.Server('http://45.113.233.19:8081')
+    db = couchserver['tweets']
     lga_f = LGA_filter(LGA_file)
-    print(list(map(lga_f.filter, tweets['rows'])))
+    for item in db.view('_design/geo/_view/geo'):
+        print(lga_f.filter(item.value['coordinates']))
+    
+    #print(list(map(lga_f.filter, tweets['rows'])))
