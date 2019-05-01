@@ -8,6 +8,16 @@
     name: tweepy
     executable: pip3
 
+- name: Install shapely
+  pip:
+    name: shapely
+    executable: pip3
+
+- name: Install couchdb
+  pip:
+    name: couchdb
+    executable: pip3
+
 - name: Install git
   apt:
     name: git

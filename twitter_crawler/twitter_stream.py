@@ -41,22 +41,18 @@ class TwitterListener(StreamListener):
         
     def on_data(self, data):
         try:
-            coordinates = []
             tweet = json.loads(data)
             if tweet['geo'] != None:
                 coordinates = tweet['geo']['coordinates']
                 lga_id = self.lga_filter.filter(coordinates)
-                print(lga_id)
                 tweet['lga_id'] = lga_id
-            print(coordinates)
+            else:
+                tweet['lga_id'] = None
 
-            id = tweet["id_str"]
-            tweet['_id'] = id
-            res = self.db.save(tweet)
-        except BaseException as e:
-            print("Error on_data %s" % str(e))
+            tweet['_id'] = tweet["id_str"]
+            self.db.save(tweet)
         except couchdb.http.ResourceConflict:
-            print("Document id " + id + " already in database")
+            print("Document id " + tweet["id_str"] + " already in database")
         return True
           
 
@@ -69,12 +65,12 @@ class TwitterListener(StreamListener):
 if __name__ == '__main__':
     try:
         loc = config.LOCATION
-        couchserver = couchdb.Server('http://45.113.233.237:5984')
-        db = couchserver['test']
-        db_geojson = couchserver['geojson']
-        #for d in db_geojson.view('_design/geojsonview/_view/geojsonview'):
-        #    print (d.value['type'])
-        db_geojson_view = db_geojson.view('_design/geojsonview/_view/geojsonview')
+        couchserver = couchdb.Server("http://" + config.DATABASE_IP + ":" + config.DATABASE_PORT)
+
+        db = couchserver[config.DATABASE_NAME]
+        db_geojson = couchserver[config.DATABASE_LGA_NAME]
+        db_geojson_view = db_geojson.view(config.DATABASE_LGA_GEOJSON_VIEW)
+
         lga = LGA_Filter(db_geojson_view)
         twitter_streamer = TwitterStreamer(db, loc, lga)
         twitter_streamer.stream_tweets()
