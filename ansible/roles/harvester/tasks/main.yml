@@ -1,0 +1,33 @@
+- name: Install pip3
+  apt:
+    name: python3-pip
+    update_cache: yes
+
+- name: Install tweepy
+  pip:
+    name: tweepy
+    executable: pip3
+
+- name: Install git
+  apt:
+    name: git
+    update_cache: yes
+
+- name: Clone repo
+  git:
+    repo: "http://{{git_user | urlencode}}:{{git_pass | urlencode}}@github.com/RNagawidjaja/COMP90024_Assignment2.git"
+    dest: "{{ install_location }}"
+  become_user: ubuntu
+  
+- name: Create service file
+  template:
+    src: twitter_stream.j2
+    dest: /lib/systemd/system/twitter_stream.service
+    mode: 0644
+
+- name: Enable service
+  systemd:
+    daemon_reload: yes
+    enabled: yes
+    state: started
+    name: twitter_stream

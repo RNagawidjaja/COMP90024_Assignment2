@@ -1,0 +1,11 @@
+- hosts: harvestservers
+  remote_user: ubuntu
+  become: yes
+  roles:
+    - harvester
+
+# - hosts: dbservers
+#   remote_user: ubuntu
+#   become: yes
+#   roles:
+#     - couch

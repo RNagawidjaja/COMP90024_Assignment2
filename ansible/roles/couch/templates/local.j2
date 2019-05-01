@@ -7,7 +7,6 @@
 [couchdb]
 ;max_document_size = 4294967296 ; bytes
 ;os_process_timeout = 5000
-uuid = 0e260ea832262410e0c723fd9bc2121f
 database_dir = /mnt/data
 
 [couch_peruser]
@@ -24,7 +23,7 @@ database_dir = /mnt/data
 ;q = 1
 
 [chttpd]
-port = 8081
+;port = 5984
 bind_address = 0.0.0.0
 ; Options for the MochiWeb HTTP server.
 ;server_options = [{backlog, 128}, {acceptor_pool_size, 16}]
@@ -97,4 +96,4 @@ bind_address = 0.0.0.0
 ; 'username = password' lines. Don't forget to restart CouchDB after
 ; changing this.
 [admins]
-;admin = mysecretpassword
+admin = admin

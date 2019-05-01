@@ -1,0 +1,11 @@
+[Unit]
+Description=Twitter Stream Service
+After=multi-user.target
+
+[Service]
+Type=idle
+User=ubuntu
+ExecStart=/usr/bin/python3 {{ install_location }}/twitter_crawler/twitter_stream.py
+
+[Install]
+WantedBy=multi-user.target
