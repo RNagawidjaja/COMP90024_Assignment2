@@ -6,17 +6,14 @@ from numpy import array
 import couchdb
 import sys
 
-class LGA_filter:
-    def __init__(self, lga_file):
+class LGA_Filter:
+    def __init__(self, lga_view):
         self._polygons = []
-        #self._multi_polygon = []
-        with open(LGA_file, encoding='UTF-8') as lf:
-            self.lga = json.load(lf)
-        for row in self.lga['rows']:
+        for row in lga_view:
             polygon = []
             polygons = []
-            type = row['doc']['geometry']['type']
-            coordinates = row['doc']['geometry']['coordinates']
+            type = row.value['type']
+            coordinates = row.value['coordinates']
             id = row['id']
             if type == 'MultiPolygon':
                 for c in coordinates:

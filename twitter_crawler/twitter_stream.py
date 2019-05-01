@@ -2,8 +2,9 @@
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
-from couchdb import CouchDB
+from lga_filter import LGA_Filter
 
+import couchdb
 import config
 import json
  
@@ -12,16 +13,17 @@ class TwitterStreamer():
     """
     Class for streaming and processing live tweets.
     """
-    def __init__(self, db, locations):
+    def __init__(self, db, locations, lga_filter):
         self.db = db
         self.locations = locations
+        self.lga_filter = lga_filter
 
     def stream_tweets(self):
         # This handles Twitter authetification and the connection to Twitter Streaming API
         auth = OAuthHandler(config.CONSUMER_KEY, config.CONSUMER_SECRET)
         auth.set_access_token(config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET)
 
-        listener = TwitterListener(self.db)
+        listener = TwitterListener(self.db, self.lga_filter)
         stream = Stream(auth, listener)
 
         # Fliter by location
@@ -33,18 +35,28 @@ class TwitterListener(StreamListener):
     """
     This is a basic listener that just prints received tweets to stdout.
     """
-    def __init__(self, db):
+    def __init__(self, db, lga_filter):
         self.db = db
-
+        self.lga_filter = lga_filter
+        
     def on_data(self, data):
         try:
+            coordinates = []
             tweet = json.loads(data)
+            if tweet['geo'] != None:
+                coordinates = tweet['geo']['coordinates']
+                lga_id = self.lga_filter.filter(coordinates)
+                print(lga_id)
+                tweet['lga_id'] = lga_id
+            print(coordinates)
+
             id = tweet["id_str"]
-            res = self.db.saveJson(id, tweet)
-            if "error" in res and res["error"] == "conflict":
-                print("Document id " + id + " already in database")
+            tweet['_id'] = id
+            res = self.db.save(tweet)
         except BaseException as e:
             print("Error on_data %s" % str(e))
+        except couchdb.http.ResourceConflict:
+            print("Document id " + id + " already in database")
         return True
           
 
@@ -57,8 +69,14 @@ class TwitterListener(StreamListener):
 if __name__ == '__main__':
     try:
         loc = config.LOCATION
-        db = CouchDB(config.DATABASE_IP, config.DATABASE_PORT, config.DATABASE_NAME)
-        twitter_streamer = TwitterStreamer(db, loc)
+        couchserver = couchdb.Server('http://45.113.233.237:5984')
+        db = couchserver['test']
+        db_geojson = couchserver['geojson']
+        #for d in db_geojson.view('_design/geojsonview/_view/geojsonview'):
+        #    print (d.value['type'])
+        db_geojson_view = db_geojson.view('_design/geojsonview/_view/geojsonview')
+        lga = LGA_Filter(db_geojson_view)
+        twitter_streamer = TwitterStreamer(db, loc, lga)
         twitter_streamer.stream_tweets()
     except KeyboardInterrupt:
         print("\nQuiting")
