@@ -8,12 +8,12 @@ from django.http import JsonResponse
 # Create your views here.
 # /index
 def index(request):
-    return render(request, "index.html")
+    return render(None, "index.html")
 
 # /map
 def map(request):
     data = {"latitude":-37.798805, "longitude":144.960839}
-    return render(request, "map.html", context=data)
+    return render(None, "map.html", context=data)
 
 
 def geojson(request):
