@@ -9,7 +9,7 @@ geojson = server["geojson"]
 
 geojson_view = geojson.view("_design/geojsonview/_view/geojsonview")
 lga = LGA_Filter(geojson_view)
-count = 0
+count = 1
 
 for row in tweets.view("_design/noLGAField/_view/noLGAField"):
     doc = tweets.get(row["id"])

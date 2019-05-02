@@ -2,7 +2,6 @@ import json
 import couchdb
 
 server = couchdb.Server('http://45.113.233.237:5984')
-geojson = server["geojson"]
 website = server["website"]
 
 # Change file name to aurin data file downloaded
@@ -11,12 +10,12 @@ website = server["website"]
 
 count = 1
 
-for row in geojson.view("_design/geojsonview/_view/geojsonview"):
-    geo_doc = row["value"]
-
+for row in website.view("_all_docs"):
+    doc_id = row["id"]
+    doc = website.get(doc_id)
     # Change props to include what data we want to show
-    props = {"LGA Code" : geo_doc["id"], "LGA Name" : geo_doc["lga_name"]}
-    doc = {"_id" : geo_doc["id"], "type" : "Feature", "geometry" : geo_doc["geometry"], "properties" : props}
+    props = {"Test" : "test value"}
+    doc["properties"] = {**doc["properties"], **props}
     website.save(doc)
 
     # Show progress when running
