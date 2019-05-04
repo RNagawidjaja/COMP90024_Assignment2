@@ -18,6 +18,11 @@
     name: couchdb
     executable: pip3
 
+- name: Install nltk
+  pip:
+    name: nltk
+    executable: pip3
+
 - name: Install git
   apt:
     name: git
