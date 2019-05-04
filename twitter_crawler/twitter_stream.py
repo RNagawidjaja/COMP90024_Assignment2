@@ -3,29 +3,29 @@ from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream
 from lga_filter import LGA_Filter
+from topic_modelling import TopicModeller
 
 import couchdb
 import config
 import json
-
-import topic_modelling
  
 # # # # TWITTER STREAMER # # # #
 class TwitterStreamer():
     """
     Class for streaming and processing live tweets.
     """
-    def __init__(self, db, locations, lga_filter):
+    def __init__(self, db, locations, lga_filter, topic_modeller):
         self.db = db
         self.locations = locations
         self.lga_filter = lga_filter
+        self.topic_modeller = topic_modeller
 
     def stream_tweets(self):
         # This handles Twitter authetification and the connection to Twitter Streaming API
         auth = OAuthHandler(config.CONSUMER_KEY, config.CONSUMER_SECRET)
         auth.set_access_token(config.ACCESS_TOKEN, config.ACCESS_TOKEN_SECRET)
 
-        listener = TwitterListener(self.db, self.lga_filter)
+        listener = TwitterListener(self.db, self.lga_filter, self.topic_modeller)
         stream = Stream(auth, listener)
 
         # Fliter by location
@@ -37,9 +37,10 @@ class TwitterListener(StreamListener):
     """
     This is a basic listener that just prints received tweets to stdout.
     """
-    def __init__(self, db, lga_filter):
+    def __init__(self, db, lga_filter, topic_modeller):
         self.db = db
         self.lga_filter = lga_filter
+        self.topic_modeller = topic_modeller
         
     def on_data(self, data):
         topic = []
@@ -52,7 +53,7 @@ class TwitterListener(StreamListener):
                 tweet['lga_id'] = lga_id
             else:
                 tweet['lga_id'] = None
-            topic = topic_modelling.topic_of_tweet(text)
+            topic = self.topic_modeller.topic_of_tweet(text)
             tweet['topic'] = topic
             tweet['_id'] = tweet["id_str"]
             self.db.save(tweet)
@@ -76,8 +77,9 @@ if __name__ == '__main__':
         db_geojson = couchserver[config.DATABASE_LGA_NAME]
         db_geojson_view = db_geojson.view(config.DATABASE_LGA_GEOJSON_VIEW)
 
-        lga = LGA_Filter(db_geojson_view)
-        twitter_streamer = TwitterStreamer(db, loc, lga)
+        lga_filter = LGA_Filter(db_geojson_view)
+        topic_modeller = TopicModeller()
+        twitter_streamer = TwitterStreamer(db, loc, lga_filter, topic_modeller)
         twitter_streamer.stream_tweets()
     except KeyboardInterrupt:
         print("\nQuiting")
