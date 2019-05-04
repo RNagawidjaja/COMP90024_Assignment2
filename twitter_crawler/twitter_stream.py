@@ -7,6 +7,8 @@ from lga_filter import LGA_Filter
 import couchdb
 import config
 import json
+
+import topic_modelling
  
 # # # # TWITTER STREAMER # # # #
 class TwitterStreamer():
@@ -40,15 +42,18 @@ class TwitterListener(StreamListener):
         self.lga_filter = lga_filter
         
     def on_data(self, data):
+        topic = []
         try:
             tweet = json.loads(data)
+            text = tweet['text']
             if tweet['geo'] != None:
                 coordinates = tweet['geo']['coordinates']
                 lga_id = self.lga_filter.filter(coordinates)
                 tweet['lga_id'] = lga_id
             else:
                 tweet['lga_id'] = None
-
+            topic = topic_modelling.topic_of_tweet(text)
+            tweet['topic'] = topic
             tweet['_id'] = tweet["id_str"]
             self.db.save(tweet)
         except couchdb.http.ResourceConflict:
