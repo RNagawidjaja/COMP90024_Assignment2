@@ -10,10 +10,19 @@
 #     state: absent
 #     path: /mnt/data/
 
+- name: Add couchdb repo to apt sources
+  apt_repository:
+    repo: deb https://apache.bintray.com/couchdb-deb bionic main
+    state: present
+
+- name: Add couchdb apt key
+  apt_key:
+    url: https://couchdb.apache.org/repo/bintray-pubkey.asc
+    state: present
+
 - name: Update repositories cache and install couchdb
   apt:
     name: couchdb
-    update_cache: yes
 
 - name: Edit vm.args
   template:

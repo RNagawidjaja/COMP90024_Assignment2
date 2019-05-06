@@ -1,7 +1,6 @@
 - name: Install pip3
   apt:
     name: python3-pip
-    update_cache: yes
 
 - name: Install tweepy
   pip:
@@ -23,14 +22,9 @@
     name: nltk
     executable: pip3
 
-- name: Install git
-  apt:
-    name: git
-    update_cache: yes
-
 - name: Clone repo
   git:
-    repo: "http://{{git_user | urlencode}}:{{git_pass | urlencode}}@github.com/RNagawidjaja/COMP90024_Assignment2.git"
+    repo: "https://{{git_user | urlencode}}:{{git_pass | urlencode}}@github.com/RNagawidjaja/COMP90024_Assignment2.git"
     dest: "{{ install_location }}"
   become_user: ubuntu
   

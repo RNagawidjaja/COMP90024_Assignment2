@@ -1,11 +1,17 @@
+- hosts: localhost
+  roles:
+    - create_servers
+
 - hosts: harvestservers
   remote_user: ubuntu
   become: yes
   roles:
+    - common
     - harvester
 
 # - hosts: dbservers
 #   remote_user: ubuntu
 #   become: yes
 #   roles:
+#     - common
 #     - couch

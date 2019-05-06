@@ -1,0 +1,69 @@
+- name: Install OpenstackSDK
+  pip:
+    name: openstacksdk
+    executable: pip3
+
+- name: Create Volumes
+  os_volume:
+    display_name: "{{ item.volume_name }}"
+    size: "{{ item.volume_size }}"
+    availability_zone: "melbourne-qh2"
+    wait: yes
+    timeout: 600
+    state: present
+  loop: "{{ servers }}"
+
+- name: Create Security Groups
+  os_security_group:
+    name: "{{ item.name }}"
+    state: present
+  loop: "{{ security_groups }}"
+
+- name: Create Security Group Rules (ips)
+  os_security_group_rule:
+    security_group: "{{ item.security_group }}"
+    protocol: "{{ item.protocol }}"
+    port_range_min: "{{ item.port_range_min }}"
+    port_range_max: "{{ item.port_range_max }}"
+    remote_ip_prefix: "{{ item.remote_ip_prefix }}"
+    state: present
+  loop: "{{ security_group_rules }}"
+  when: item.remote_ip_prefix is defined
+
+- name: Create Security Group Rules (groups)
+  os_security_group_rule:
+    security_group: "{{ item.security_group }}"
+    protocol: "{{ item.protocol }}"
+    port_range_min: "{{ item.port_range_min }}"
+    port_range_max: "{{ item.port_range_max }}"
+    remote_group: "{{ item.remote_group }}"
+    state: present
+  loop: "{{ security_group_rules }}"
+  when: item.remote_group is defined
+
+- name: Create Instances
+  os_server:
+    name: "{{ item.name }}"
+    image: "NeCTAR Ubuntu 18.04 LTS (Bionic) amd64"
+    key_name: "team77"
+    flavor: "uom.mse.2c9g"
+    availability_zone: "melbourne-qh2-uom"
+    security_groups: "{{ item.security_groups }}"
+    volumes: "{{ item.volume_name }}"
+    wait: yes
+    timeout: 600
+    state: present
+  register: os_servers
+  loop: "{{ servers }}"
+
+- name: Add instances to role
+  add_host:
+    name: "{{ item.openstack.interface_ip }}"
+    group: "{{ item.item.groups }}"
+  loop: "{{ os_servers.results }}"
+
+- name: Wait for ssh to come online
+  wait_for:
+    port: 22
+    host: "{{ item.openstack.interface_ip }}"
+  loop: "{{ os_servers.results }}"

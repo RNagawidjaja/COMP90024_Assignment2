@@ -1,0 +1,28 @@
+- name: Add http proxy
+  lineinfile:
+    path:  /etc/environment
+    regexp: '^http_proxy='
+    line: 'http_proxy="http://wwwproxy.unimelb.edu.au:8000"'
+
+- name: Add https proxy
+  lineinfile:
+    path:  /etc/environment
+    regexp: '^https_proxy='
+    line: 'https_proxy="http://wwwproxy.unimelb.edu.au:8000"'
+
+- name: Add ftp proxy
+  lineinfile:
+    path:  /etc/environment
+    regexp: '^ftp_proxy='
+    line: 'ftp_proxy="http://wwwproxy.unimelb.edu.au:8000"'
+
+- name: Add no proxy ips
+  lineinfile:
+    path:  /etc/environment
+    regexp: '^no_proxy='
+    line: 'no_proxy=localhost,127.0.0.1,127.0.1.1,ubuntu'
+
+- name: Install git
+  apt:
+    name: git
+    update_cache: yes

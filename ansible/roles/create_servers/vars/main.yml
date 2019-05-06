@@ -1,0 +1,60 @@
+servers:
+  - name: test
+    security_groups: "couchdb,ssh"
+    volume_name: test_vol
+    volume_size: 10
+    groups: harvestservers
+
+  # - name: harvester
+  #   security_groups: "couchdb,ssh"
+  #   volume_name: db_cluster_2
+  #   volume_size: 10
+  #   groups: harvestservers,dbservers
+
+  # - name: processor
+  #   security_groups: "couchdb,ssh"
+  #   volume_name: db_cluster_3
+  #   volume_size: 10
+  #   groups: harvestservers,dbservers
+
+  # - name: webserver
+  #   security_groups: "couchdb,ssh,django-dev"
+  #   volume_name: db_cluster_4
+  #   volume_size: 10
+  #   groups: harvestservers
+
+security_groups:
+  - name: ssh
+  - name: test
+  - name: django-dev
+
+security_group_rules:
+  - security_group: ssh
+    protocol: tcp
+    port_range_min: 22
+    port_range_max: 22
+    remote_ip_prefix: 0.0.0.0/0
+
+  - security_group: test
+    protocol: tcp
+    port_range_min: 5984
+    port_range_max: 5984
+    remote_ip_prefix: 0.0.0.0/0
+
+  - security_group: test
+    protocol: tcp
+    port_range_min: 5986
+    port_range_max: 5986
+    remote_group: couchdb
+
+  - security_group: test
+    protocol: tcp
+    port_range_min: 9100
+    port_range_max: 9200
+    remote_group: couchdb
+
+  - security_group: django-dev
+    protocol: tcp
+    port_range_min: 8000
+    port_range_max: 8000
+    remote_ip_prefix: 0.0.0.0/0
