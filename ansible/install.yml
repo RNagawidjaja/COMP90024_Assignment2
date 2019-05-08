@@ -15,3 +15,10 @@
   roles:
     - common
     - harvester
+
+- hosts: webservers
+  remote_user: ubuntu
+  become: yes
+  roles:
+    - common
+    - webserver
