@@ -3,6 +3,9 @@ Description=Twitter Stream Service
 After=multi-user.target
 
 [Service]
+Environment="http_proxy=http://wwwproxy.unimelb.edu.au:8000"
+Environment="https_proxy=http://wwwproxy.unimelb.edu.au:8000"
+Environment="ftp_proxy=http://wwwproxy.unimelb.edu.au:8000"
 Type=idle
 User=ubuntu
 ExecStart=/usr/bin/python3 {{ install_location }}/twitter_crawler/twitter_stream.py
