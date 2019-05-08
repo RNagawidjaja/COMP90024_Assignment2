@@ -1,0 +1,6 @@
+- name: Install python3
+  apt:
+    name: python3
+
+- name: Run django server
+  shell: python3 /home/ubuntu/web_app/manage.py runserver
