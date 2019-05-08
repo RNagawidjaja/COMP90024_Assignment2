@@ -10,19 +10,38 @@
 #     state: absent
 #     path: /mnt/data/
 
-- name: Add couchdb repo to apt sources
-  apt_repository:
-    repo: deb https://apache.bintray.com/couchdb-deb bionic main
+- name: Format volume
+  filesystem:
+    fstype: ext4
+    dev: /dev/vdb
+
+- name: Mount Volume
+  mount:
+    path: /mnt
+    src: /dev/vdb
+    fstype: ext4
     state: present
 
+- name: Add couchdb repo to apt sources
+  lineinfile:
+    path: "/etc/apt/sources.list"
+    regexp: '^deb https://apache.bintray.com/couchdb-deb bionic main'
+    line: "deb https://apache.bintray.com/couchdb-deb bionic main"
+
 - name: Add couchdb apt key
-  apt_key:
-    url: https://couchdb.apache.org/repo/bintray-pubkey.asc
-    state: present
+  shell: curl -L https://couchdb.apache.org/repo/bintray-pubkey.asc | sudo apt-key add -
 
 - name: Update repositories cache and install couchdb
   apt:
     name: couchdb
+    force_apt_get: yes
+    update_cache: yes
+
+- name: Change /mnt/ owner to couchdb
+  file:
+    path: /mnt/
+    owner: couchdb
+    group: couchdb
 
 - name: Edit vm.args
   template:
@@ -48,7 +67,7 @@
 - name: Enable cluster
   uri:
     method: POST
-    url: http://{{ inventory_hostname }}:5984/_cluster_setup
+    url: http://localhost:5984/_cluster_setup
     user: admin
     password: admin
     force_basic_auth: yes
@@ -69,7 +88,7 @@
 - name: Add nodes
   uri:
     method: POST
-    url: http://{{ inventory_hostname }}:5984/_cluster_setup
+    url: http://localhost:5984/_cluster_setup
     user: admin
     password: admin
     force_basic_auth: yes
@@ -87,7 +106,7 @@
 - name: Finish cluster setup
   uri:
     method: POST
-    url: http://{{ inventory_hostname }}:5984/_cluster_setup
+    url: http://localhost:5984/_cluster_setup
     user: admin
     password: admin
     force_basic_auth: yes
@@ -95,4 +114,21 @@
     body_format: json
     body:
       action: "finish_cluster"
-  when: inventory_hostname == groups['dbservers'][0]
+
+- name: Create tweet db
+  uri:
+    method: PUT
+    url: http://localhost:5984/tweets
+    user: admin
+    password: admin
+    force_basic_auth: yes
+    status_code: 201
+
+- name: Create geojson db
+  uri:
+    method: PUT
+    url: http://localhost:5984/geojson
+    user: admin
+    password: admin
+    force_basic_auth: yes
+    status_code: 201

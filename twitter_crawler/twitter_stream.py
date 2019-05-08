@@ -75,7 +75,7 @@ if __name__ == '__main__':
 
         db = couchserver[config.DATABASE_NAME]
         db_geojson = couchserver[config.DATABASE_LGA_NAME]
-        db_geojson_view = db_geojson.view(config.DATABASE_LGA_GEOJSON_VIEW)
+        db_geojson_view = db_geojson.view("_all_docs")
 
         lga_filter = LGA_Filter(db_geojson_view)
         topic_modeller = TopicModeller()

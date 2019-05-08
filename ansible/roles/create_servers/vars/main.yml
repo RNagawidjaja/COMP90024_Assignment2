@@ -3,7 +3,7 @@ servers:
     security_groups: "couchdb,ssh"
     volume_name: test_vol
     volume_size: 10
-    groups: harvestservers
+    groups: dbservers,harvestservers
 
   # - name: harvester
   #   security_groups: "couchdb,ssh"

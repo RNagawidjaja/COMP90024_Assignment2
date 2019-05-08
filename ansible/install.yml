@@ -2,16 +2,16 @@
   roles:
     - create_servers
 
+- hosts: dbservers
+  remote_user: ubuntu
+  become: yes
+  roles:
+    - common
+    - couch
+
 - hosts: harvestservers
   remote_user: ubuntu
   become: yes
   roles:
     - common
     - harvester
-
-# - hosts: dbservers
-#   remote_user: ubuntu
-#   become: yes
-#   roles:
-#     - common
-#     - couch

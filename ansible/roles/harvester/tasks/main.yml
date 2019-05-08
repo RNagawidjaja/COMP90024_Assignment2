@@ -27,7 +27,14 @@
     repo: "https://{{git_user | urlencode}}:{{git_pass | urlencode}}@github.com/RNagawidjaja/COMP90024_Assignment2.git"
     dest: "{{ install_location }}"
   become_user: ubuntu
+  ignore_errors: yes
   
+- name: Add no proxy ips
+  lineinfile:
+    path: "{{ install_location }}/twitter_crawler/config.py"
+    regexp: '^DATABASE_IP'
+    line: "DATABASE_IP = '{{ groups['dbservers'][0] }}'"
+
 - name: Create service file
   template:
     src: twitter_stream.j2

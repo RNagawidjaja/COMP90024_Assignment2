@@ -55,6 +55,7 @@
     state: present
   register: os_servers
   loop: "{{ servers }}"
+  notify: Format volume
 
 - name: Add instances to role
   add_host:

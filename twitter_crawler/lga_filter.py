@@ -11,22 +11,25 @@ class LGA_Filter:
         for row in lga_view:
             polygon = []
             polygons = []
-            type = row.value['geometry']['type']
-            coordinates = row.value['geometry']['coordinates']
-            id = row['id']
-            if type == 'MultiPolygon':
-                for c in coordinates:
-                    polygon = [tuple(l) for l in c[0]]
+            try:
+                type = row.value['geometry']['type']
+                coordinates = row.value['geometry']['coordinates']
+                id = row['id']
+                if type == 'MultiPolygon':
+                    for c in coordinates:
+                        polygon = [tuple(l) for l in c[0]]
+                        polygon = Polygon(polygon)
+                        polygons.append(polygon)
+                    multi_polygon = MultiPolygon(polygons)
+                    self._polygons.append([id, multi_polygon])
+                elif type == 'Polygon':
+                    polygon = [tuple(l) for l in coordinates[0]]
                     polygon = Polygon(polygon)
-                    polygons.append(polygon)
-                multi_polygon = MultiPolygon(polygons)
-                self._polygons.append([id, multi_polygon])
-            elif type == 'Polygon':
-                polygon = [tuple(l) for l in coordinates[0]]
-                polygon = Polygon(polygon)
-                self._polygons.append([id, polygon])
-            else:
-                print('Incorrect type')    
+                    self._polygons.append([id, polygon])
+                else:
+                    print('Incorrect type') 
+            except KeyError:
+                pass
             
     def filter(self, point):
         point = [point[1], point[0]]
