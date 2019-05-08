@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Map</title>
+
+
+</head>
+<body>
+  <div id="map" style="width: 1270px; height: 670px;"></div>
+  <script>
+    // Initialize and add the map
+    function initMap() {
+      var point_1 = {lat: {{ latitude }}, lng: {{ longitude }}};
+      var map = new google.maps.Map(document.getElementById('map'), {zoom: 12, center: point_1});
+
+      var marker = new google.maps.Marker({position: point_1, map: map});
+
+      map.data.loadGeoJson('http://45.113.233.231:8000/geojson');
+
+      map.data.setStyle(function(feature) {
+        color = feature.getProperty('color');
+        return ({
+          fillColor: color,
+          strokeColor: color,
+          strokeWeight: 1
+        });
+      });
+
+      map.data.addListener('mouseover', function(event) {
+        document.getElementById('info-box').textContent = event.feature.getProperty('id');
+      });
+
+      infoWindow = new google.maps.InfoWindow;
+
+      map.data.addListener('click', function(event) {
+        var contentString = event.feature.getProperty('id');
+        contentString += "\n Number of health records = " + event.feature.getProperty('health_records');
+        infoWindow.setContent(contentString);
+        infoWindow.setPosition(event.latLng);
+        infoWindow.open(map);
+      })
+    }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxy6il3MhjKj9VbyNN4YcFdWDx_yRy6HU&callback=initMap"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+  <div id='info-box' style="position : fixed; bottom: 50px; left: 0; width: 100px; height: 50px; border: 1px solid #73AD21; background-color: white"></div>
+</body>
+</html>
