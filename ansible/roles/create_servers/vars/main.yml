@@ -25,7 +25,7 @@ servers:
 
 security_groups:
   - name: ssh
-  - name: test
+  - name: couchdb
   - name: django-dev
 
 security_group_rules:
@@ -35,19 +35,19 @@ security_group_rules:
     port_range_max: 22
     remote_ip_prefix: 0.0.0.0/0
 
-  - security_group: test
+  - security_group: couchdb
     protocol: tcp
     port_range_min: 5984
     port_range_max: 5984
     remote_ip_prefix: 0.0.0.0/0
 
-  - security_group: test
+  - security_group: couchdb
     protocol: tcp
     port_range_min: 5986
     port_range_max: 5986
     remote_group: couchdb
 
-  - security_group: test
+  - security_group: couchdb
     protocol: tcp
     port_range_min: 9100
     port_range_max: 9200
