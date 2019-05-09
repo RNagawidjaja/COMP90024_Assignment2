@@ -1,10 +1,14 @@
 servers:
   - name: webserver
     security_groups: "couchdb,ssh,django-dev"
+    # volume_name: test_vol
+    # volume_size: 10
     groups: dbservers,harvestservers,webservers
 
   - name: harvester
     security_groups: "couchdb,ssh"
+    # volume_name: test_vol
+    # volume_size: 10
     groups: dbservers,harvestservers
 
 security_groups:
