@@ -34,9 +34,8 @@ class LGA_Filter:
     def filter(self, point):
         point = [point[1], point[0]]
         point = Point(tuple(point))
-        
+        lga_id = None
         for p in self._polygons:
-            lga_id = None
             if p[1].contains(point):
                 lga_id = p[0]
                 break
