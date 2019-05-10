@@ -10,17 +10,17 @@
 #     state: absent
 #     path: /mnt/data/
 
-- name: Format volume
-  filesystem:
-    fstype: ext4
-    dev: /dev/vdb
+# - name: Format volume
+#   filesystem:
+#     fstype: ext4
+#     dev: /dev/vdb
 
-- name: Mount Volume
-  mount:
-    path: /mnt
-    src: /dev/vdb
-    fstype: ext4
-    state: present
+# - name: Mount Volume
+#   mount:
+#     path: /mnt
+#     src: /dev/vdb
+#     fstype: ext4
+#     state: present
 
 - name: Add couchdb repo to apt sources
   lineinfile:
@@ -37,11 +37,11 @@
     force_apt_get: yes
     update_cache: yes
 
-- name: Change /mnt/ owner to couchdb
-  file:
-    path: /mnt/
-    owner: couchdb
-    group: couchdb
+# - name: Change /mnt/ owner to couchdb
+#   file:
+#     path: /mnt/
+#     owner: couchdb
+#     group: couchdb
 
 - name: Edit vm.args
   template:
