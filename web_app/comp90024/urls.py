@@ -20,10 +20,10 @@ from team77app import views
 
 urlpatterns = [
     path('', views.index, name='home'),
-    path('map', views.map),
-    # re_path(r'^map', views.map),
-    path('geojson', views.geojson),
-    # re_path(r'^geojson', views.geojson),
+    # path('map', views.map),
+    re_path(r'^map', views.map),
+    #path('geojson', views.geojson),
+    re_path(r'^geojson', views.geojson),
     # re_path(r'^allgeojson', views.allgeojson),
     # path('admin/', admin.site.urls),
 ]
