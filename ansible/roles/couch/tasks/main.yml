@@ -1,15 +1,3 @@
-# - name: Remove exsiting couchdb
-#   apt:
-#     name: couchdb
-#     state: absent
-#     purge: yes
-#     force_apt_get: yes
-
-# - name: Delete data
-#   file:
-#     state: absent
-#     path: /mnt/data/
-
 - name: Format volume
   filesystem:
     fstype: ext4

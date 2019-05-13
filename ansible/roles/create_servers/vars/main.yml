@@ -1,27 +1,27 @@
 servers:
-  - name: test
+  - name: harvester1
+    security_groups: "couchdb,ssh"
+    volume_name: db_cluster_1
+    volume_size: 50
+    groups: harvestservers,dbservers
+
+  - name: harvester2
+    security_groups: "couchdb,ssh"
+    volume_name: db_cluster_2
+    volume_size: 50
+    groups: harvestservers,dbservers
+
+  - name: harvester3
+    security_groups: "couchdb,ssh"
+    volume_name: db_cluster_3
+    volume_size: 50
+    groups: harvestservers,dbservers
+
+  - name: webserver
     security_groups: "couchdb,ssh,django-dev"
-    volume_name: test_vol
-    volume_size: 10
-    groups: webservers
-
-  # - name: harvester
-  #   security_groups: "couchdb,ssh"
-  #   volume_name: db_cluster_2
-  #   volume_size: 10
-  #   groups: harvestservers,dbservers
-
-  # - name: processor
-  #   security_groups: "couchdb,ssh"
-  #   volume_name: db_cluster_3
-  #   volume_size: 10
-  #   groups: harvestservers,dbservers
-
-  # - name: webserver
-  #   security_groups: "couchdb,ssh,django-dev"
-  #   volume_name: db_cluster_4
-  #   volume_size: 10
-  #   groups: harvestservers
+    volume_name: db_cluster_4
+    volume_size: 50
+    groups: harvestservers
 
 security_groups:
   - name: ssh
