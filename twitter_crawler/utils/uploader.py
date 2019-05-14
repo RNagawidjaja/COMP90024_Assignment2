@@ -1,3 +1,7 @@
+# COMP90024 Cloud and Cluster Computing
+# Team 77 - Melbourne
+# Uploads a json file with tweets to a couchdb server
+
 import json
 import couchdb
 import re

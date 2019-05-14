@@ -1,4 +1,8 @@
-# variables that contain the user credentials to access Twitter API
+# COMP90024 Cloud and Cluster Computing
+# Team 77 - Melbourne
+
+# Variables that contain the user credentials to access Twitter API
+
 CONSUMER_KEY = "YkfyoJoVkb5b7LTonsVeeEcBH"
 CONSUMER_SECRET = "PuHHnYAclBnw8NPj41sZaK7P5Tkr9AIU7ir7BLhyCGsGj07Tlk"
 ACCESS_TOKEN =  "1104339045520334849-NT3AVwl1YO52DN3yEuqHTyPXw7mhL0"

@@ -1,3 +1,6 @@
+# COMP90024 Cloud and Cluster Computing
+# Team 77 - Melbourne
+
 from shapely.geometry import Point
 from shapely.geometry.multipolygon import MultiPolygon
 from shapely.geometry.polygon import Polygon
@@ -45,13 +48,13 @@ class LGA_Filter:
             
 
 if __name__ == '__main__':
-    #for testing
-    #tweets_file = r'C:\Users\reyna\Documents\Unimelb\COMP90024\Assignment_2\tweets\tweets_coordinates.json'
+    # For testing
+    tweets_file = r'C:\Users\reyna\Documents\Unimelb\COMP90024\Assignment_2\tweets\tweets_coordinates.json'
     LGA_file = r'C:\Users\reyna\Documents\Unimelb\COMP90024\Assignment_2\tweets\LGA.json'
     
-    #with open(tweets_file, encoding='UTF-8') as tf:
-    #    tweets = json.load(tf)
-    #y = tweets['rows'][0]['value']['coordinates']
+    with open(tweets_file, encoding='UTF-8') as tf:
+       tweets = json.load(tf)
+    y = tweets['rows'][0]['value']['coordinates']
     
     couchserver = couchdb.Server('http://45.113.233.19:8081')
     db_tweets = couchserver['tweets']
@@ -60,12 +63,12 @@ if __name__ == '__main__':
     for item in db_tweets.view('_design/geo/_view/geo', descending = True):
         lga_id = lga.filter(item.value['coordinates'])
         print(lga_id)
-        #doc = {'_id': item.id, 'coordinates': item.value['coordinates'], 'lga_name' : lga_name}
-        #try:
-        #    db_tweets_geo.save(doc)
-        #except couchdb.http.ResourceConflict:
-        #    print(item.id)
-        #    print('ID has already existed')
-        #    sys.exit()
+        doc = {'_id': item.id, 'coordinates': item.value['coordinates'], 'lga_name' : lga_name}
+        try:
+           db_tweets_geo.save(doc)
+        except couchdb.http.ResourceConflict:
+           print(item.id)
+           print('ID has already existed')
+           sys.exit()
     
-    #print(list(map(lga_f.filter, tweets['rows'])))
+    print(list(map(lga_f.filter, tweets['rows'])))

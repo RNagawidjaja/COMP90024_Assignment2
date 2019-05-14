@@ -1,3 +1,7 @@
+# COMP90024 Cloud and Cluster Computing
+# Team 77 - Melbourne
+# Adds a topic field to all tweets that don't have one
+
 from topic_modelling import TopicModeller
 
 import json

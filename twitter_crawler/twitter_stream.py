@@ -1,4 +1,6 @@
-# YouTube Video: https://www.youtube.com/watch?v=wlnx-7cm4Gg
+# COMP90024 Cloud and Cluster Computing
+# Team 77 - Melbourne
+
 from tweepy.streaming import StreamListener
 from tweepy import OAuthHandler
 from tweepy import Stream

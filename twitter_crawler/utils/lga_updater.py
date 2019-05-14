@@ -1,3 +1,7 @@
+# COMP90024 Cloud and Cluster Computing
+# Team 77 - Melbourne
+# Adds a LGA field to tweets that don't have one
+
 from lga_filter import LGA_Filter
 
 import json
