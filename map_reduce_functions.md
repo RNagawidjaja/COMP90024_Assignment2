@@ -1,6 +1,6 @@
-### Map Reduce Functions
+# Map Reduce Functions #
 
-### Gluttony ###
+## Gluttony ##
 ### Map ###
 ```
 function (doc) {
@@ -14,7 +14,7 @@ function (doc) {
 _count
 ```
 
-### Gluttony Rate ###
+## Gluttony Rate ##
 ### Map ###
 ```
 function (doc) {
@@ -30,10 +30,10 @@ function (doc) {
 ```
 ### Reduce ###
 ```
-_stats_
+_stats
 ```
 
-### LGA ###
+## LGA ##
 ### Map ###
 ```
 function (doc) {
@@ -47,7 +47,7 @@ function (doc) {
 _count
 ```
 
-### Sloth ###
+## Sloth ##
 ### Map ###
 ```
 function (doc) {
@@ -61,7 +61,7 @@ function (doc) {
 _count
 ```
 
-### Sloth Rate ###
+## Sloth Rate ##
 ### Map ###
 ```
 function (doc) {
