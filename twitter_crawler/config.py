@@ -1,12 +1,11 @@
 # COMP90024 Cloud and Cluster Computing
 # Team 77 - Melbourne
 
-# Variables that contain the user credentials to access Twitter API
-
-CONSUMER_KEY = "YkfyoJoVkb5b7LTonsVeeEcBH"
-CONSUMER_SECRET = "PuHHnYAclBnw8NPj41sZaK7P5Tkr9AIU7ir7BLhyCGsGj07Tlk"
-ACCESS_TOKEN =  "1104339045520334849-NT3AVwl1YO52DN3yEuqHTyPXw7mhL0"
-ACCESS_TOKEN_SECRET = "YoDLdMtuB8kN4PGCtbgzpWaxnYRDZsEgRxEySSm3WKUKH"
+# Enter you twitter api credentials here
+CONSUMER_KEY = ""
+CONSUMER_SECRET = ""
+ACCESS_TOKEN =  ""
+ACCESS_TOKEN_SECRET = ""
 
 # database
 DATABASE_IP = "45.113.233.237"
